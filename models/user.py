@@ -13,12 +13,16 @@ class User(BaseModel):
     profile_image = pw.CharField(unique=False, default="https://cdn.business2community.com/wp-content/uploads/2017/08/blank-profile-picture-973460_640.png")
     is_private = pw.BooleanField(default=False)
 
+    @hybrid_property
+    def follow_status(self):
+        pass
+
     def validate(self):
         duplicate_username = User.get_or_none(User.username == self.username)
 
         if duplicate_username == None:
             print("Username is NoneType")
-        elif duplicate_username:
+        elif duplicate_username.id != self.id:
             self.errors.append('Username is not unique')
 
         duplicate_email = User.get_or_none(User.email == self.email)
