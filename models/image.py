@@ -6,4 +6,4 @@ import peewee as pw
 
 class Image(BaseModel):
     user = pw.ForeignKeyField(User, backref='images', on_delete='CASCADE')
-    image_url = pw.TextField(null=True, on_delete='CASCADE')
+    image_url = pw.TextField(null=True)

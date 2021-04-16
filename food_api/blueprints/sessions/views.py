@@ -22,3 +22,7 @@ def login():
             return jsonify(access_token=access_token)
     else:
         return jsonify({'message' : 'No User Found'})
+
+@sessions_api_blueprint.route('/logout', methods=['POST'])
+def logout():
+    pass

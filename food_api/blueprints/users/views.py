@@ -43,7 +43,9 @@ def update(id):
             user.email = email
         if password:
             user.password = password
-        user.save()
-        return jsonify({'success' : True})
+        if user.save():
+            return jsonify({'message' : 'success'})
+        else:
+            return jsonify({'errors' : user.errors})
     else:
         return jsonify({'message' : 'User Does Not Exist'})
