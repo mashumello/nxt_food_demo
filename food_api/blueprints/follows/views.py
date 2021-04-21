@@ -5,7 +5,7 @@ from models.follow import Follow
 from flask_jwt_extended import get_jwt_identity
 from flask_jwt_extended import jwt_required
 
-follows_api_blueprint = Blueprint('follow', 
+follows_api_blueprint = Blueprint('follows_api', 
                             __name__,
                             template_folder='templates')
 
