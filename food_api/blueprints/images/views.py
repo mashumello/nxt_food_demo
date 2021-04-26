@@ -30,6 +30,21 @@ def user_image(id):
 
         return jsonify({"message" : "User Does Not Exit"})
 
+@images_api_blueprint.route('/me', methods=['GET'])
+@jwt_required()
+def me():
+    identity = get_jwt_identity()
+    user = User.get(username=identity)
+    results = []
+    for image in user.images:
+        results.append(
+            {
+                "image_id" : image.id,
+                "image_url" : image.image_url
+            }
+        )
+    return jsonify(results)
+
 @images_api_blueprint.route('/profile_image', methods=['POST'])
 @jwt_required()
 def upload_profile():
@@ -48,7 +63,7 @@ def upload_profile():
     user = User.get(username=identity)
     user.profile_image = f"https://{bucket_name}.s3-ap-southeast-1.amazonaws.com/{file.filename}"
     if user.save():
-        return jsonify({'message' : 'Image Uploaded'})
+        return jsonify({'message' : 'success'})
     else:
         return jsonify({'errors' : user.errors})
 
@@ -70,7 +85,7 @@ def upload_image():
     user = User.get(username=identity)
     image = Image(user=user, image_url=f"https://{bucket_name}.s3-ap-southeast-1.amazonaws.com/{file.filename}")
     if image.save():
-        return jsonify({'message' : 'Image Uploaded'})
+        return jsonify({'message' : 'success'})
     else:
         return jsonify({'errors' : user.errors})
 
