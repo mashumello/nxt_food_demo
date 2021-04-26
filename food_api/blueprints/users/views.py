@@ -1,5 +1,7 @@
 from flask import Blueprint, json, jsonify, request
 from models.user import User
+from flask_jwt_extended import get_jwt_identity
+from flask_jwt_extended import jwt_required
 
 users_api_blueprint = Blueprint('users_api',
                              __name__,
@@ -11,13 +13,37 @@ def index():
     results = []
 
     for user in users:
-        user_data = {}
-        user_data['id'] = user.id
-        user_data['username'] = user.username
-        user_data['email'] = user.email
-        user_data['profile_image'] = user.profile_image
-        results.append(user_data)
-    return jsonify({'users' : results})
+        results.append(
+            {
+                "id" : user.id,
+                "username" : user.username,
+                "email" : user.email,
+                "profile_image" : user.profile_image
+            }
+        )
+    return jsonify(results)
+
+@users_api_blueprint.route('/<id>', methods=['GET'])
+def user(id):
+    user = User.get_by_id(id)
+    user_data = {}
+    user_data['id'] = user.id
+    user_data['username'] = user.username
+    user_data['email'] = user.email
+    user_data['profile_image'] = user.profile_image
+    return jsonify(user_data)
+
+@users_api_blueprint.route('/me', methods=['GET'])
+@jwt_required()
+def me():
+    identity = get_jwt_identity()
+    user = User.get(username=identity)
+    user_data = {}
+    user_data['id'] = user.id
+    user_data['username'] = user.username
+    user_data['email'] = user.email
+    user_data['profile_image'] = user.profile_image
+    return jsonify(user_data)
 
 @users_api_blueprint.route('/signup', methods=['POST'])
 def sign_up():
